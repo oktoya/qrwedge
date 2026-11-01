@@ -63,10 +63,44 @@ fn parse_args() -> Args {
             "--cooldown" => a.cooldown = it.next().and_then(|v| v.parse().ok()).unwrap_or(1.5),
             "--delay" => a.delay = it.next().and_then(|v| v.parse().ok()).unwrap_or(0),
             "--mirror" => a.mirror = true,
+            "/?" | "/help" | "-?" | "-h" | "--help" => {
+                show_help();
+                std::process::exit(0);
+            }
             _ => {}
         }
     }
     a
+}
+
+const HELP: &str = "\
+QR Wedge 1.0.0 — 제작: OKTO
+웹캠/폰카로 QR·바코드를 읽어 키보드로 입력하고 Enter를 친다.
+
+사용법:  QRWedge [옵션]
+
+  --cam N          시작 카메라 번호 (기본 0)
+  --suffix 종류    코드 뒤에 칠 키: enter | tab | none (기본 enter)
+  --cooldown 초    같은 코드를 다시 입력하기까지 화면에서 빠져 있어야 하는 시간 (기본 1.5)
+  --delay ms       글자 사이 지연, 느린 프로그램용 (기본 0)
+  --mirror         미리보기 좌우 반전
+  /?  /help        이 도움말
+
+예)  QRWedge --suffix tab --cam 1
+
+미리보기 창 클릭: 다음 카메라 · 종료: 창 닫기";
+
+/// Windows exe는 콘솔이 없으므로 메시지 창으로, 맥은 터미널에 출력한다
+fn show_help() {
+    #[cfg(windows)]
+    {
+        use windows_sys::Win32::UI::WindowsAndMessaging::{MessageBoxW, MB_ICONINFORMATION, MB_OK};
+        let wide = |s: &str| s.encode_utf16().chain([0]).collect::<Vec<u16>>();
+        let (text, title) = (wide(HELP), wide(TITLE));
+        unsafe { MessageBoxW(std::ptr::null_mut(), text.as_ptr(), title.as_ptr(), MB_OK | MB_ICONINFORMATION) };
+    }
+    #[cfg(not(windows))]
+    println!("{HELP}");
 }
 
 fn beep() {
