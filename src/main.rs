@@ -89,8 +89,9 @@ const HELP: &str = concat!("QR Wedge ", env!("CARGO_PKG_VERSION"), " — 제작:
   --cooldown 초    같은 코드 재입력을 위해 화면에서 빠져 있어야 하는 시간 (기본 1.5)
   --delay ms       글자 사이 지연, 느린 프로그램용 (기본 0)
   --mirror         미리보기 좌우 반전
-  /? /help -? -h   이 도움말
+
   /v /version -v   버전
+  /? /help -? -h   이 도움말
 
 예)  QRWedge --suffix tab --cam 1
 
