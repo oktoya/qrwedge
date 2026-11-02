@@ -18,7 +18,7 @@
 ## 옵션
 `--cam N` 시작 카메라 · `--suffix enter|tab|none` · `--cooldown 1.5` · `--delay ms` 글자 사이 지연 · `--mirror` 좌우 반전
 
-`QRWedge /?` (또는 `/help`, `--help`)로 실행하면 이 옵션 설명이 나온다 (Windows: 메시지 창, 맥: 터미널 출력 — `dist/QRWedge.app/Contents/MacOS/QRWedge --help`).
+`QRWedge /?` (또는 `/help`, `--help`)로 실행하면 이 옵션 설명이, `/v` (또는 `/version`, `--version`)면 버전이 나온다 (Windows: 메시지 창, 맥: 터미널 출력 — `dist/QRWedge.app/Contents/MacOS/QRWedge --help`).
 
 ## 빌드
 - Windows: `build_win.bat` → `dist\QRWedge.exe`

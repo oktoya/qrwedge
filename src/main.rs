@@ -64,7 +64,11 @@ fn parse_args() -> Args {
             "--delay" => a.delay = it.next().and_then(|v| v.parse().ok()).unwrap_or(0),
             "--mirror" => a.mirror = true,
             "/?" | "/help" | "-?" | "-h" | "--help" => {
-                show_help();
+                show_message(HELP);
+                std::process::exit(0);
+            }
+            "/v" | "/version" | "-v" | "-V" | "--version" => {
+                show_message(VERSION);
                 std::process::exit(0);
             }
             _ => {}
@@ -73,34 +77,36 @@ fn parse_args() -> Args {
     a
 }
 
-const HELP: &str = "\
-QR Wedge 1.0.0 — 제작: OKTO
-웹캠/폰카로 QR·바코드를 읽어 키보드로 입력하고 Enter를 친다.
+// 버전은 Cargo.toml에서 가져온다
+const VERSION: &str = concat!("QR Wedge ", env!("CARGO_PKG_VERSION"), " — 제작: OKTO");
+const HELP: &str = concat!("QR Wedge ", env!("CARGO_PKG_VERSION"), " — 제작: OKTO", "
+웹캠/폰카로 읽은 QR·바코드를 가로채 스캐너처럼 입력한다.
 
 사용법:  QRWedge [옵션]
 
   --cam N          시작 카메라 번호 (기본 0)
   --suffix 종류    코드 뒤에 칠 키: enter | tab | none (기본 enter)
-  --cooldown 초    같은 코드를 다시 입력하기까지 화면에서 빠져 있어야 하는 시간 (기본 1.5)
+  --cooldown 초    같은 코드 재입력을 위해 화면에서 빠져 있어야 하는 시간 (기본 1.5)
   --delay ms       글자 사이 지연, 느린 프로그램용 (기본 0)
   --mirror         미리보기 좌우 반전
-  /?  /help        이 도움말
+  /? /help -? -h   이 도움말
+  /v /version -v   버전
 
 예)  QRWedge --suffix tab --cam 1
 
-미리보기 창 클릭: 다음 카메라 · 종료: 창 닫기";
+미리보기 창 클릭: 다음 카메라 · 종료: 창 닫기");
 
 /// Windows exe는 콘솔이 없으므로 메시지 창으로, 맥은 터미널에 출력한다
-fn show_help() {
+fn show_message(msg: &str) {
     #[cfg(windows)]
     {
         use windows_sys::Win32::UI::WindowsAndMessaging::{MessageBoxW, MB_ICONINFORMATION, MB_OK};
         let wide = |s: &str| s.encode_utf16().chain([0]).collect::<Vec<u16>>();
-        let (text, title) = (wide(HELP), wide(TITLE));
+        let (text, title) = (wide(msg), wide(TITLE));
         unsafe { MessageBoxW(std::ptr::null_mut(), text.as_ptr(), title.as_ptr(), MB_OK | MB_ICONINFORMATION) };
     }
     #[cfg(not(windows))]
-    println!("{HELP}");
+    println!("{msg}");
 }
 
 fn beep() {
